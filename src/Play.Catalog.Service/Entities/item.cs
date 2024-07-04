@@ -2,10 +2,10 @@ using System;
 
 namespace Play.Catalog.Service.Entities
 {
-    public class Item
+    public class Item : IEntity
     {
         public Guid Id { get; set; }
-        
+
         public String Name { get; set; }
 
         public String Description { get; set; }
