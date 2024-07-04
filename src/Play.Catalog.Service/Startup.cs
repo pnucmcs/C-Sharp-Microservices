@@ -34,26 +34,11 @@ namespace Play.Catalog.Service
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            
-            BsonSerializer.RegisterSerializer(new GuidSerializer(BsonType.String));
-            BsonSerializer.RegisterSerializer(new DateTimeOffsetSerializer(BsonType.String));
-            
+
             serviceSettings = Configuration.GetSection(nameof(ServiceSettings)).Get<ServiceSettings>();
 
-            services.AddSingleton(serviceProvider =>
-            {
-                var mongoDbSettings = Configuration.GetSection(nameof(MongoDbSettings)).Get<MongoDbSettings>();
-                var mongoClinet = new MongoClient(mongoDbSettings.Connectiontring);
-
-                return mongoClinet.GetDatabase(serviceSettings.ServiceName);
-            });
-
-            services.AddSingleton<IRepository<Item>>(ServiceProvider =>
-            {
-                var database = ServiceProvider.GetService<IMongoDatabase>();
-                return new MongoRepository<Item>(database, "items" );
-
-            });
+            services.AddMongo()
+                .AddMongoRepository<Item>("items");
 
             services.AddControllers(options =>
             {
